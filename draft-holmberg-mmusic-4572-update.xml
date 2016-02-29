@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- comment -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd"[]>
+<?rfc toc="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc sortrefs="no" ?>
+<rfc ipr="trust200902" category="std" docName="draft-holmberg-mmusic-4572-update-00.txt" updates="4572" submissionType="IETF" xml:lang="en">
+  <front>
+    <title>
+		Updates to RFC 4572
+	</title>
+    <author fullname="Christer Holmberg" initials="C.H." surname="Holmberg">
+        <organization abbrev="Ericsson">Ericsson</organization>
+        <address>
+            <postal>
+                <street>Hirsalantie 11</street>
+                <city>Jorvas</city>
+                <region></region>
+                <code>02420</code>
+                <country>Finland</country>
+            </postal>
+            <phone></phone>
+            <email>christer.holmberg@ericsson.com</email>
+        </address>
+    </author>     	
+
+    <date year="2016" />
+    <area>RAI</area>
+    <abstract>
+		<t>
+            This document updates RFC 4572 by clarifying the usage of multiple SDP 'fingerprint'
+            attributes with a single TLS connection. The document also updates the preferred
+            cipher suite to be used.
+        </t>
+    </abstract>
+</front>
+<middle>
+    <section title="Introduction">
+        <t>
+            RFC 4572 <xref format="default" pageno="false" target="RFC4572"/> specifies
+            how to establish Transport Layer Security (TLS) connections using
+            the Session Description Protocol (SDP) <xref format="default" pageno="false" 
+            target="RFC4566"/>.
+        </t>
+        <t>
+            RFC 4572 defines the SDP 'fingerprint' attribute, which is used to carry a secure hash
+            value associated with a certificate. However, RFC 4572 is currently unclear on whether
+            multiple 'fingerprint' can be associated with a single SDP media description ("m= line")
+            <xref format="default" pageno="false" target="RFC4566"/>, and the associated semantics.
+        </t>
+        <t>
+            RFC 4572 also specifies a preferred cipher suite. However, the currently preferred
+            cipher suite is considered outdated, and the preference needs to be updated.        
+        </t>
+		<t>
+            This document updates RFC 4572 <xref format="default" pageno="false" target="RFC4572"/> 
+            by clarifying the usage of multiple SDP 'fingerprint' attributes with a single 
+            TLS connection. The document also updates the preferred cipher suite to be used.
+        </t>
+    </section>
+		
+    <section title="Conventions">
+		<t>
+			The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+			"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+			document are to be interpreted as described in <xref target="RFC2119"></xref>.
+		</t>
+    </section>
+
+    <section title="Update to RFC 4572">
+            <t>
+                This section updates section 5 of RFC 4572. The change clarifies the usage and semantics
+                of multiple SDP "fingerprint" attributes, and updates the preferred cipher suite.
+            </t>
+            <figure>
+                <artwork align="left" alt="" height="" name="" type="" width="" xml:space="preserve"><![CDATA[
+
+Update to section 8.3.2
+-----------------------                
+
+OLD TEXT:
+
+   Parties to a TLS session indicate their identities by presenting
+   authentication certificates as part of the TLS handshake procedure.
+   Authentication certificates are X.509 [6] certificates, as profiled
+   by RFC 3279 [7], RFC 3280 [8], and RFC 4055 [9].
+
+   In order to associate media streams with connections and to prevent
+   unauthorized barge-in attacks on the media streams, endpoints MUST
+   provide a certificate fingerprint.  If the X.509 certificate
+   presented for the TLS connection matches the fingerprint presented in
+   the SDP, the endpoint can be confident that the author of the SDP is
+   indeed the initiator of the connection.
+
+   A certificate fingerprint is a secure one-way hash of the DER
+   (distinguished encoding rules) form of the certificate.  (Certificate
+   fingerprints are widely supported by tools that manipulate X.509
+   certificates; for instance, the command "openssl x509 -fingerprint"
+   causes the command-line tool of the openssl package to print a
+   certificate fingerprint, and the certificate managers for Mozilla and
+   Internet Explorer display them when viewing the details of a
+   certificate.)
+
+   A fingerprint is represented in SDP as an attribute (an 'a' line).
+   It consists of the name of the hash function used, followed by the
+   hash value itself.  The hash value is represented as a sequence of
+   uppercase hexadecimal bytes, separated by colons.  The number of
+   bytes is defined by the hash function.  (This is the syntax used by
+   openssl and by the browsers' certificate managers.  It is different
+   from the syntax used to represent hash values in, e.g., HTTP digest
+   authentication [18], which uses unseparated lowercase hexadecimal
+   bytes.  It was felt that consistency with other applications of
+   fingerprints was more important.)
+
+   The formal syntax of the fingerprint attribute is given in Augmented
+   Backus-Naur Form [10] in Figure 2.  This syntax extends the BNF
+   syntax of SDP [1].
+
+   attribute              =/ fingerprint-attribute
+
+   fingerprint-attribute  =  "fingerprint" ":" hash-func SP fingerprint
+
+   hash-func              =  "sha-1" / "sha-224" / "sha-256" /
+                             "sha-384" / "sha-512" /
+                             "md5" / "md2" / token
+                             ; Additional hash functions can only come
+                             ; from updates to RFC 3279
+
+   fingerprint            =  2UHEX *(":" 2UHEX)
+                             ; Each byte in upper-case hex, separated
+                             ; by colons.
+
+   UHEX                   =  DIGIT / %x41-46 ; A-F uppercase
+
+   Figure 2: Augmented Backus-Naur Syntax for the Fingerprint Attribute
+
+   A certificate fingerprint MUST be computed using the same one-way
+   hash function as is used in the certificate's signature algorithm.
+   (This ensures that the security properties required for the
+   certificate also apply for the fingerprint.  It also guarantees that
+   the fingerprint will be usable by the other endpoint, so long as the
+   certificate itself is.)  Following RFC 3279 [7] as updated by RFC
+   4055 [9], therefore, the defined hash functions are 'SHA-1' [11]
+   [19], 'SHA-224' [11], 'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11],
+   'MD5' [12], and 'MD2' [13], with 'SHA-1' preferred.  A new IANA
+   registry of Hash Function Textual Names, specified in Section 8,
+   allows for addition of future tokens, but they may only be added if
+   they are included in RFCs that update or obsolete RFC 3279 [7].
+   Self-signed certificates (for which legacy certificates are not a
+   consideration) MUST use one of the FIPS 180 algorithms (SHA-1,
+   SHA-224, SHA-256, SHA-384, or SHA-512) as their signature algorithm,
+   and thus also MUST use it to calculate certificate fingerprints.
+
+   The fingerprint attribute may be either a session-level or a media-
+   level SDP attribute.  If it is a session-level attribute, it applies
+   to all TLS sessions for which no media-level fingerprint attribute is
+   defined.
+
+   
+NEW TEXT:
+
+   Parties to a TLS session indicate their identities by presenting
+   authentication certificates as part of the TLS handshake procedure.
+   Authentication certificates are X.509 [6] certificates, as profiled
+   by RFC 3279 [7], RFC 3280 [8], and RFC 4055 [9].
+
+   In order to associate media streams with connections and to prevent
+   unauthorized barge-in attacks on the media streams, endpoints MUST
+   provide a certificate fingerprint.  If the X.509 certificate
+   presented for the TLS connection matches the fingerprint presented in
+   the SDP, the endpoint can be confident that the author of the SDP is
+   indeed the initiator of the connection.
+
+   A certificate fingerprint is a secure one-way hash of the DER
+   (distinguished encoding rules) form of the certificate.  (Certificate
+   fingerprints are widely supported by tools that manipulate X.509
+   certificates; for instance, the command "openssl x509 -fingerprint"
+   causes the command-line tool of the openssl package to print a
+   certificate fingerprint, and the certificate managers for Mozilla and
+   Internet Explorer display them when viewing the details of a
+   certificate.)
+
+   A fingerprint is represented in SDP as an attribute (an 'a' line).
+   It consists of the name of the hash function used, followed by the
+   hash value itself.  The hash value is represented as a sequence of
+   uppercase hexadecimal bytes, separated by colons.  The number of
+   bytes is defined by the hash function.  (This is the syntax used by
+   openssl and by the browsers' certificate managers.  It is different
+   from the syntax used to represent hash values in, e.g., HTTP digest
+   authentication [18], which uses unseparated lowercase hexadecimal
+   bytes.  It was felt that consistency with other applications of
+   fingerprints was more important.)
+
+   The formal syntax of the fingerprint attribute is given in Augmented
+   Backus-Naur Form [10] in Figure 2.  This syntax extends the BNF
+   syntax of SDP [1].
+
+   attribute              =/ fingerprint-attribute
+
+   fingerprint-attribute  =  "fingerprint" ":" hash-func SP fingerprint
+
+   hash-func              =  "sha-1" / "sha-224" / "sha-256" /
+                             "sha-384" / "sha-512" /
+                             "md5" / "md2" / token
+                             ; Additional hash functions can only come
+                             ; from updates to RFC 3279
+
+   fingerprint            =  2UHEX *(":" 2UHEX)
+                             ; Each byte in upper-case hex, separated
+                             ; by colons.
+
+   UHEX                   =  DIGIT / %x41-46 ; A-F uppercase
+
+   Figure 2: Augmented Backus-Naur Syntax for the Fingerprint Attribute
+
+   A certificate fingerprint MUST be computed using the same one-way
+   hash function as is used in the certificate's signature algorithm.
+   (This ensures that the security properties required for the
+   certificate also apply for the fingerprint.  It also guarantees that
+   the fingerprint will be usable by the other endpoint, so long as the
+   certificate itself is.)  Following RFC 3279 [7] as updated by RFC
+   4055 [9], therefore, the defined hash functions are 'SHA-1' [11]
+   [19], 'SHA-224' [11], 'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11],
+   'MD5' [12], and 'MD2' [13], with 'SHA-256' preferred.  A new IANA
+   registry of Hash Function Textual Names, specified in Section 8,
+   allows for addition of future tokens, but they may only be added if
+   they are included in RFCs that update or obsolete RFC 3279 [7].
+   Self-signed certificates (for which legacy certificates are not a
+   consideration) MUST use one of the FIPS 180 algorithms (SHA-1,
+   SHA-224, SHA-256, SHA-384, or SHA-512) as their signature algorithm,
+   and thus also MUST use it to calculate certificate fingerprints.
+
+   The fingerprint attribute may be either a session-level or a media-
+   level SDP attribute.  If it is a session-level attribute, it applies
+   to all TLS sessions for which no media-level fingerprint attribute is
+   defined.
+
+      
+                ]]></artwork>
+            </figure>
+	</section>
+    
+	<section title="Security Considerations">
+		<t>
+            This document improves security.
+		</t>
+	</section>
+	                   
+	<section title="Acknowledgements">
+		<t>
+            TBD
+        </t>
+	</section>
+		
+	<section title="Change Log">	
+		<t>[RFC EDITOR NOTE: Please remove this section when publishing]</t>
+        <t>Changes from draft-holmberg-mmusic-4572-update-xx
+			<list style="symbols">
+                <t>Add text</t>
+			</list>
+		</t>		
+	</section>
+    
+</middle>
+
+<back>
+    <references title="Normative References">
+		<?rfc include="reference.RFC.2119"?>
+        <?rfc include="reference.RFC.3264"?>
+		<?rfc include="reference.RFC.4572"?>
+        <?rfc include="reference.RFC.4566"?>
+    </references>    
+</back>
+</rfc>
