@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- comment -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd"[]>
+<?rfc toc="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc sortrefs="no" ?>
+<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-00.txt" updates="4572" submissionType="IETF" xml:lang="en">
+  <front>
+    <title>
+		Updates to RFC 4572
+	</title>
+    <author fullname="Christer Holmberg" initials="C.H." surname="Holmberg">
+        <organization abbrev="Ericsson">Ericsson</organization>
+        <address>
+            <postal>
+                <street>Hirsalantie 11</street>
+                <city>Jorvas</city>
+                <region></region>
+                <code>02420</code>
+                <country>Finland</country>
+            </postal>
+            <phone></phone>
+            <email>christer.holmberg@ericsson.com</email>
+        </address>
+    </author>     	
+
+    <date year="2016" />
+    <area>RAI</area>
+    <abstract>
+		<t>
+            This document updates RFC 4572 by clarifying the usage of multiple SDP 'fingerprint'
+            attributes with a single TLS connection. The document also updates the preferred
+            cipher suite to be used, and removes the requirement to use the same hash function
+            for calculating the certificate fingerprint that is used to calculate the 
+            certificate signature.
+        </t>
+    </abstract>
+</front>
+<middle>
+    <section title="Introduction">
+        <t>
+            RFC 4572 <xref format="default" pageno="false" target="RFC4572"/> specifies
+            how to establish Transport Layer Security (TLS) connections using
+            the Session Description Protocol (SDP) <xref format="default" pageno="false" 
+            target="RFC4566"/>.
+        </t>
+        <t>
+            RFC 4572 defines the SDP 'fingerprint' attribute, which is used to carry a secure hash
+            value associated with a certificate. However, RFC 4572 is currently unclear on whether
+            multiple 'fingerprint' can be associated with a single SDP media description ("m= line")
+            <xref format="default" pageno="false" target="RFC4566"/>, and the associated semantics.
+            Multiple 'fingerprint' attributes are needed when an endpoint wants to provide multiple
+            fingerprint, using different hash functions, for a certificate. Multiple 'fingerprint'
+            attributes are also needed if an endpoint wants to provide fingerprints associated with
+            multiple certificates. For example, with RTP-based media, an endpoint might use different
+            certificates for RTP and RTCP.
+        </t>
+        <t>
+            RFC 4572 also specifies a preferred cipher suite. However, the currently preferred
+            cipher suite is considered outdated, and the preference needs to be updated.        
+        </t>
+        <t>
+            RFC 4572 mandates that the hash function used to calculate the fingerprint is the same
+            hash function used to calculate the certificate signature. That requirement might
+            prevent usage of newer, stronger and more collision-safe hash functions for calculating 
+            certificate fingerprints.
+        </t>
+		<t>
+            This document updates RFC 4572 <xref format="default" pageno="false" target="RFC4572"/> 
+            by clarifying the usage of multiple SDP 'fingerprint' attributes with a single 
+            TLS connection. The document also updates the preferred cipher suite to be used, and
+            removes the requirement to use the same hash function for calculating the certificate
+            fingerprint and certificate signature.
+        </t>
+    </section>
+		
+    <section title="Conventions">
+		<t>
+			The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+			"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+			document are to be interpreted as described in <xref target="RFC2119"></xref>.
+		</t>
+    </section>
+
+    <section title="Update to RFC 4572">
+        <t>
+            This section updates section 5 of RFC 4572.
+        </t>
+        <section title="Update to the sixth paragraph of section 5">
+            <figure>
+                <artwork align="left" alt="" height="" name="" type="" width="" xml:space="preserve"><![CDATA[
+
+OLD TEXT:
+
+   A certificate fingerprint MUST be computed using the same one-way
+   hash function as is used in the certificate's signature algorithm.
+   (This ensures that the security properties required for the
+   certificate also apply for the fingerprint.  It also guarantees that
+   the fingerprint will be usable by the other endpoint, so long as the
+   certificate itself is.)  Following RFC 3279 [7] as updated by RFC
+   4055 [9], therefore, the defined hash functions are 'SHA-1' [11]
+   [19], 'SHA-224' [11], 'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11],
+   'MD5' [12], and 'MD2' [13], with 'SHA-1' preferred.  A new IANA
+   registry of Hash Function Textual Names, specified in Section 8,
+   allows for addition of future tokens, but they may only be added if
+   they are included in RFCs that update or obsolete RFC 3279 [7].
+   Self-signed certificates (for which legacy certificates are not a
+   consideration) MUST use one of the FIPS 180 algorithms (SHA-1,
+   SHA-224, SHA-256, SHA-384, or SHA-512) as their signature algorithm,
+   and thus also MUST use it to calculate certificate fingerprints.
+
+   
+NEW TEXT:
+
+   Following RFC 3279 [7] as updated by RFC 4055 [9], therefore, the 
+   defined hash functions are 'SHA-1' [11] [19], 'SHA-224' [11], 
+   'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11], 'MD5' [12], and 
+   'MD2' [13], with 'SHA-256' preferred.  A new IANA registry of Hash 
+   Function Textual Names, specified in Section 8, allows for addition 
+   of future tokens, but they may only be added if they are included 
+   in RFCs that update or obsolete RFC 3279 [7].
+      
+                ]]></artwork>
+            </figure>
+        </section>
+        <section title="New paragraphs to the end of section 5">
+                    <figure>
+                <artwork align="left" alt="" height="" name="" type="" width="" xml:space="preserve"><![CDATA[
+
+                
+NEW TEXT:
+
+    Multiple SDP fingerprint attributes can be associated with an m- 
+    line. This can occur if multiple fingerprints have been calculated
+    for a certificate, using different hash algorithms. It can also 
+    occur if multiple certificates might be used (e.g. separate 
+    certificates for RTP and RTCP). In such cases, the same number of
+    fingerprints MUST be calculated for each certificate, and for each
+    certificate the same set of hash algorithms MUST be used.
+
+    An endpoint MUST be able to match at least one of the received 
+    fingerprints with the cerficiate(s) to be used. If there is no
+    match, the endpoint MUST NOT establish the TLS connection.
+    
+    NOTE: The SDP fingerprint attribute does not contain a reference to
+    a specific certificate. Endpoints need to compare all fingerprints 
+    with the cerficiate hash when looking for a match.
+    
+                ]]></artwork>
+            </figure>
+        </section>
+	</section>
+    
+	<section title="Security Considerations">
+		<t>
+            This document improves security.
+		</t>
+	</section>
+    
+    <section anchor="section.iana" title="IANA Considerations">
+        <t>
+            This document makes no requests from IANA.
+        </t>
+	</section>
+                   
+	<section title="Acknowledgements">
+		<t>
+            Martin Thompson, Paul Kyzivat and Jonathan Lennox provided valuable comments and input on this document.
+        </t>
+	</section>
+		
+	<section title="Change Log">	
+		<t>[RFC EDITOR NOTE: Please remove this section when publishing]</t>
+        <t>Changes from draft-holmberg-mmusic-4572-update-01
+			<list style="symbols">
+                <t>Adopted WG document (draft-ietf-mmusic-4572-update-00) submitted.</t>
+                <t>IANA considerations section added.</t>
+			</list>
+		</t>		
+	</section>
+    
+</middle>
+
+<back>
+    <references title="Normative References">
+		<?rfc include="reference.RFC.2119"?>
+        <?rfc include="reference.RFC.3264"?>
+		<?rfc include="reference.RFC.4572"?>
+        <?rfc include="reference.RFC.4566"?>
+    </references>    
+</back>
+</rfc>
