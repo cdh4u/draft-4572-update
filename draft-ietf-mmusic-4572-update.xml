@@ -4,7 +4,7 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc sortrefs="no" ?>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-00.txt" updates="4572" submissionType="IETF" xml:lang="en">
+<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-01.txt" updates="4572" submissionType="IETF" xml:lang="en">
   <front>
     <title>
 		Updates to RFC 4572
@@ -99,8 +99,8 @@ OLD TEXT:
    the fingerprint will be usable by the other endpoint, so long as the
    certificate itself is.)  Following RFC 3279 [7] as updated by RFC
    4055 [9], therefore, the defined hash functions are 'SHA-1' [11]
-   [19], 'SHA-224' [11], 'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11],
-   'MD5' [12], and 'MD2' [13], with 'SHA-1' preferred.  A new IANA
+   [19], 'SHA-224' [11], 'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11]
+   , 'MD5' [12], and 'MD2' [13], with 'SHA-1' preferred.  A new IANA
    registry of Hash Function Textual Names, specified in Section 8,
    allows for addition of future tokens, but they may only be added if
    they are included in RFCs that update or obsolete RFC 3279 [7].
@@ -132,31 +132,41 @@ NEW TEXT:
 
     Multiple SDP fingerprint attributes can be associated with an m- 
     line. This can occur if multiple fingerprints have been calculated
-    for a certificate, using different hash algorithms. It can also 
-    occur if multiple certificates might be used (e.g. separate 
-    certificates for RTP and RTCP). In such cases, the same number of
-    fingerprints MUST be calculated for each certificate, and for each
-    certificate the same set of hash algorithms MUST be used.
+    for a certificate, using different hash algorithms. It can also
+    occur if fingerprints associated with multiple certificates have
+    been calculated, e.g. for cases where multiple certificates will be
+    used (e.g. separate certificates for RTP and RTCP), or where it is
+    not known which certificate will be used when the fingerprints are 
+    exchanged. In such cases, one or more fingerprints MUST be
+    calculated for each possible certificate. A different number of
+    fingerprints can be calculated for each certificate, and different
+    hash algorithms can be used.
 
     An endpoint MUST be able to match at least one of the received 
-    fingerprints with the cerficiate(s) to be used. If there is no
-    match, the endpoint MUST NOT establish the TLS connection.
+    fingerprints, calculated using a hash algorithm that the endpoint
+    considers secure enough, with the certificate(s) that will
+    eventually be used. If there is no match, the endpoint MUST NOT
+    establish the TLS connection.
     
     NOTE: The SDP fingerprint attribute does not contain a reference to
-    a specific certificate. Endpoints need to compare all fingerprints 
-    with the cerficiate hash when looking for a match.
+    a specific certificate. Endpoints need to compare the fingerprint
+    witha certificate hash in order to look for a match.
     
                 ]]></artwork>
             </figure>
+
         </section>
 	</section>
     
 	<section title="Security Considerations">
 		<t>
-            This document improves security.
+            This document improves security. It updates the preferred hash function cipher suite 
+            from SHA-1 to SHA-256. By clarifying the usage and handling of multiple fingerprints, the
+            document also enables hash agility, and incremental deployment of newer, and more secure, 
+            cipher suites.
 		</t>
 	</section>
-    
+	              
     <section anchor="section.iana" title="IANA Considerations">
         <t>
             This document makes no requests from IANA.
@@ -165,12 +175,20 @@ NEW TEXT:
                    
 	<section title="Acknowledgements">
 		<t>
-            Martin Thompson, Paul Kyzivat and Jonathan Lennox provided valuable comments and input on this document.
+            Martin Thompson, Paul Kyzivat, Jonathan Lennox and Roman Shpount provided valuable comments and input on this document.
         </t>
 	</section>
 		
 	<section title="Change Log">	
 		<t>[RFC EDITOR NOTE: Please remove this section when publishing]</t>
+        <t>Changes from draft-ietf-mmusic-4572-update-00
+			<list style="symbols">
+                <t>Changes in handling of multiple fingerprints.</t>
+                <t>- Number of fingerprints calculated for each certificate does not have to match.</t>
+                <t>- Clarified that receiver shall check check fingerprints using hash algorithms it considers safe.</t>
+                <t>- Additional text added to security considerations section.</t>
+			</list>
+		</t>		
         <t>Changes from draft-holmberg-mmusic-4572-update-01
 			<list style="symbols">
                 <t>Adopted WG document (draft-ietf-mmusic-4572-update-00) submitted.</t>
@@ -178,9 +196,7 @@ NEW TEXT:
 			</list>
 		</t>		
 	</section>
-    
 </middle>
-
 <back>
     <references title="Normative References">
 		<?rfc include="reference.RFC.2119"?>
