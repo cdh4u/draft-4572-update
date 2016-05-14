@@ -3,15 +3,19 @@
 
 Network Working Group                                        C. Holmberg
 Internet-Draft                                                  Ericsson
-Updates: 4572 (if approved)                                  May 5, 2016
+Updates: 4572 (if approved)                                 May 14, 2016
 Intended status: Standards Track
-Expires: November 6, 2016
+Expires: November 15, 2016
 
 
                           Updates to RFC 4572
-                  draft-ietf-mmusic-4572-update-01.txt
+                  draft-ietf-mmusic-4572-update-02.txt
 
 Abstract
+
+   This document defines a new media-level SDP attribute, 'fpl', which
+   allows endpoints to provide multiple fingerprints associated with a
+   single certificate.
 
    This document updates RFC 4572 by clarifying the usage of multiple
    SDP 'fingerprint' attributes with a single TLS connection.  The
@@ -35,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on November 6, 2016.
+   This Internet-Draft will expire on November 15, 2016.
 
 Copyright Notice
 
@@ -45,18 +49,18 @@ Copyright Notice
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
    (http://trustee.ietf.org/license-info) in effect on the date of
-   publication of this document.  Please review these documents
-   carefully, as they describe your rights and restrictions with respect
-   to this document.  Code Components extracted from this document must
-   include Simplified BSD License text as described in Section 4.e of
 
 
 
-Holmberg                Expires November 6, 2016                [Page 1]
+Holmberg                Expires November 15, 2016               [Page 1]
 
 Internet-Draft             Updates to RFC 4572                  May 2016
 
 
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
    the Trust Legal Provisions and are provided without warranty as
    described in the Simplified BSD License.
 
@@ -64,15 +68,24 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Conventions . . . . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  Update to RFC 4572  . . . . . . . . . . . . . . . . . . . . .   3
-     3.1.  Update to the sixth paragraph of section 5  . . . . . . .   3
-     3.2.  New paragraphs to the end of section 5  . . . . . . . . .   4
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
-   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   4
-   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   4
-   7.  Change Log  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-   8.  Normative References  . . . . . . . . . . . . . . . . . . . .   5
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
+   3.  SDP fpl Attribute . . . . . . . . . . . . . . . . . . . . . .   3
+   4.  SDP Offer/Answer Procedures . . . . . . . . . . . . . . . . .   4
+     4.1.  General . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     4.2.  Generating the Initial SDP Offer  . . . . . . . . . . . .   5
+     4.3.  Generating the Answer . . . . . . . . . . . . . . . . . .   5
+     4.4.  Offerer Processing of the SDP Answer  . . . . . . . . . .   5
+     4.5.  Modifying the Session . . . . . . . . . . . . . . . . . .   5
+   5.  Update to RFC 4572  . . . . . . . . . . . . . . . . . . . . .   6
+     5.1.  Update to the sixth paragraph of section 5  . . . . . . .   6
+     5.2.  New paragraphs to the end of section 5  . . . . . . . . .   7
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   9.  Change Log  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
+     10.1.  Normative References . . . . . . . . . . . . . . . . . .   8
+     10.2.  Informative References . . . . . . . . . . . . . . . . .   9
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
 
 1.  Introduction
 
@@ -82,15 +95,23 @@ Table of Contents
 
    RFC 4572 defines the SDP 'fingerprint' attribute, which is used to
    carry a secure hash value associated with a certificate.  However,
-   RFC 4572 is currently unclear on whether multiple 'fingerprint' can
-   be associated with a single SDP media description ("m= line")
-   [RFC4566], and the associated semantics.  Multiple 'fingerprint'
-   attributes are needed when an endpoint wants to provide multiple
-   fingerprint, using different hash functions, for a certificate.
-   Multiple 'fingerprint' attributes are also needed if an endpoint
-   wants to provide fingerprints associated with multiple certificates.
-   For example, with RTP-based media, an endpoint might use different
+   RFC 4572 is currently unclear on whether multiple 'fingerprint'
+   attributes can be associated with a single SDP media description ("m=
+   line") [RFC4566], and the associated semantics.  Multiple
+   'fingerprint' attributes are also needed if an endpoint wants to
+   provide fingerprints associated with multiple certificates.  For
+   example, with RTP-based media, an endpoint might use different
    certificates for RTP and RTCP.
+
+
+
+
+
+
+Holmberg                Expires November 15, 2016               [Page 2]
+
+Internet-Draft             Updates to RFC 4572                  May 2016
+
 
    RFC 4572 also specifies a preferred cipher suite.  However, the
    currently preferred cipher suite is considered outdated, and the
@@ -100,21 +121,22 @@ Table of Contents
    fingerprint is the same hash function used to calculate the
    certificate signature.  That requirement might prevent usage of
    newer, stronger and more collision-safe hash functions for
-   calculating certificate fingerprints.
+   calculating certificate fingerprints.  This change also requires that
+   multiple 'fingerprint' attributes can be associated with a single
+   "m=" line, so that implementations are able to provide hashes
+   generated with updated hash functions alongside those that are needed
+   to interoperate with existing implementations.
 
    This document updates RFC 4572 [RFC4572] by clarifying the usage of
    multiple SDP 'fingerprint' attributes with a single TLS connection.
-   The document also updates the preferred cipher suite to be used, and
+   The document also updates the preferred cipher suite to be used (to
+   SHA-256), and removes the requirement to use the same hash function
+   for calculating the certificate fingerprint and certificate
+   signature.
 
-
-
-Holmberg                Expires November 6, 2016                [Page 2]
-
-Internet-Draft             Updates to RFC 4572                  May 2016
-
-
-   removes the requirement to use the same hash function for calculating
-   the certificate fingerprint and certificate signature.
+   This document also defines a new media-level SDP attribute, 'fpl',
+   which allows endpoints to provide multiple fingerprints associated
+   with a single certificate.
 
 2.  Conventions
 
@@ -122,11 +144,158 @@ Internet-Draft             Updates to RFC 4572                  May 2016
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
 
-3.  Update to RFC 4572
+3.  SDP fpl Attribute
+
+   The SDP 'fpl' attribute contains a unique value associated with a
+   DTLS association.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Holmberg                Expires November 15, 2016               [Page 3]
+
+Internet-Draft             Updates to RFC 4572                  May 2016
+
+
+     attribute              =/ fingerprint-list
+
+     fingerprint-list       =  "fpl" ":" hash-func SP fingerprint
+                                         *(":" hash-func SP fingerprint)
+
+     ;hash-func is defined in RFC 4572
+     ;fingerprint is defined in RFC 4572
+
+     Example:
+
+     a=fpl:SHA-1 \
+           4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB \
+           SHA-256 \
+           4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+
+
+
+   The SDP 'fpl' attribute contains one or more fingerprint hash values
+   associated with a certificate.  Multiple attributes can be associated
+   with a gien SDP media description ("m=" line), in case multiple
+   certificates are associated with that "m=" line.
+
+   There is no default value defined for the SDP 'fpl' attribute.
+   Implementations that wish to use the attribute MUST explicitly
+   include it in SDP offers and answers.
+
+   The mux category [I-D.ietf-mmusic-sdp-mux-attributes] for the 'fpl'
+   attribute is 'IDENTICAL', which means that the attribute value must
+   be identical across all media descriptions being multiplexed
+   [I-D.ietf-mmusic-sdp-bundle-negotiation].
+
+   For RTP-based media, the 'fpl' attribute apply to whole associated
+   media description.  The attribute MUST NOT be defined per source
+   (using the SDP 'ssrc' attribute [RFC5576]).
+
+   The SDP Offer/Answer [RFC3264] procedures associated with the
+   attribute are defined in Section 4
+
+4.  SDP Offer/Answer Procedures
+
+4.1.  General
+
+   This section defines the SDP Offer/Answer procedures for the SDP
+   'fpl' attribute.  The procedures are defined for any SDP media
+   description ("m=" line) describing TLS/DTLS protected media.
+
+
+
+
+
+
+Holmberg                Expires November 15, 2016               [Page 4]
+
+Internet-Draft             Updates to RFC 4572                  May 2016
+
+
+4.2.  Generating the Initial SDP Offer
+
+   When the offerer sends the initial offer, it MUST associate one or
+   more SDP 'fpl' attributes with an SDP media description ("m=" line)
+   describing TLS/DTLS protected media.  Each attribute contains one or
+   more fingerprint values calculated for a given certificate.
+
+   In addition, the offerer MAY associate one or more SDP 'fingerprint'
+   attributes with the "m=" line, according to the procedures in
+   [RFC4572].
+
+   If the offerer associates both 'fpl' attributes and 'fingerprint'
+   attributes with the "m=" line in the offer, the fingerprint value
+   included in any 'fingerprint' attribute MUST also be included in the
+   'fpl' attribute associated with the same certificate.
+
+4.3.  Generating the Answer
+
+   When an answerer receives an offer that contains one or more SDP
+   'fpl' attributes, and if the answerer accepts the "m=" line, the
+   answerer MUST associate one or more 'fpl' attributes with the
+   corresponding "m=" line in the answer.
+
+   If the offer does not contain any 'fpl' attribute, the answerer
+   SHOULD NOT associate any 'fpl' attribute with the corresponding "m="
+   line in the answer.
+
+   If the offer contains one or more SDP 'fingerprint' attributes, the
+   answerer follows the procedures in [RFC4572] for generating the
+   answer.
+
+   If the answerer associates both 'fpl' attributes and 'fingerprint'
+   attributes with the "m=" line in the answer, the fingerprint value
+   included in any 'fingerprint' attribute MUST also be included in the
+   'fpl' attribute associated with the same certificate.
+
+4.4.  Offerer Processing of the SDP Answer
+
+   TBD
+
+4.5.  Modifying the Session
+
+   When an offerer sends a subsequent offer, and the offerer does not
+   explicitly requests a new TLS connection/DTLS association to be
+   established, the offerer MUST associate SDP 'fpl' attribute(s) that
+   include the hash values associated with the previously negotiated TLS
+   connection/DTLS association.  The offerer MUST NOT associate SDP
+   'fpl' attributes including fingerprints for non-uses certificates.
+
+
+
+Holmberg                Expires November 15, 2016               [Page 5]
+
+Internet-Draft             Updates to RFC 4572                  May 2016
+
+
+   When an offerer sends a subsequent offer, if the offerer explicitly
+   requests a new TLS connection/DTLS association to be established, the
+   offerer follow the procedures in Section 4.2.
+
+   [RFC4572] describes the procedures for negotiating a new TLS
+   connection.
+
+   [ref-to-draft-dtls-sdp] describes the procedures for negotiating a
+   new DTLS association.
+
+5.  Update to RFC 4572
 
    This section updates section 5 of RFC 4572.
 
-3.1.  Update to the sixth paragraph of section 5
+5.1.  Update to the sixth paragraph of section 5
 
 
  OLD TEXT:
@@ -163,42 +332,38 @@ Internet-Draft             Updates to RFC 4572                  May 2016
 
 
 
-
-Holmberg                Expires November 6, 2016                [Page 3]
+Holmberg                Expires November 15, 2016               [Page 6]
 
 Internet-Draft             Updates to RFC 4572                  May 2016
 
 
-3.2.  New paragraphs to the end of section 5
+5.2.  New paragraphs to the end of section 5
 
 
 
- NEW TEXT:
+NEW TEXT:
 
-     Multiple SDP fingerprint attributes can be associated with an m-
-     line. This can occur if multiple fingerprints have been calculated
-     for a certificate, using different hash algorithms. It can also
-     occur if fingerprints associated with multiple certificates have
-     been calculated, e.g. for cases where multiple certificates will be
-     used (e.g. separate certificates for RTP and RTCP), or where it is
-     not known which certificate will be used when the fingerprints are
-     exchanged. In such cases, one or more fingerprints MUST be
-     calculated for each possible certificate. A different number of
-     fingerprints can be calculated for each certificate, and different
-     hash algorithms can be used.
+    Multiple SDP fingerprint attributes can be associated with an m-
+    line. This can occur occur if fingerprints associated with multiple
+    certificates have been calculated, e.g. for cases where multiple
+    certificates will be used (e.g. separate certificates for RTP and
+    RTCP), or where it is not known which certificate will be used when
+    the fingerprints are exchanged. In such cases, one fingerprint MUST be
+    calculated for each possible certificate. If an endpoint wishes to
+    calculate multiple fingerprints for a given certificate, the endpoint
+    MUST use the mechanism in <ref-to-this-draft> in order to provide them
+    to the peer.
 
-     An endpoint MUST be able to match at least one of the received
-     fingerprints, calculated using a hash algorithm that the endpoint
-     considers secure enough, with the certificate(s) that will
-     eventually be used. If there is no match, the endpoint MUST NOT
-     establish the TLS connection.
+    An endpoint MUST be able to the received fingerprint(s) with the
+    certificate(s) that will eventually be used. If there is no match,
+    the endpoint MUST NOT establish the TLS connection.
 
-     NOTE: The SDP fingerprint attribute does not contain a reference to
-     a specific certificate. Endpoints need to compare the fingerprint
-     witha certificate hash in order to look for a match.
+    NOTE: The SDP fingerprint attribute does not contain a reference to
+    a specific certificate. Endpoints need to compare the fingerprint
+    with a certificate hash in order to look for a match.
 
 
-4.  Security Considerations
+6.  Security Considerations
 
    This document improves security.  It updates the preferred hash
    function cipher suite from SHA-1 to SHA-256.  By clarifying the usage
@@ -206,28 +371,35 @@ Internet-Draft             Updates to RFC 4572                  May 2016
    agility, and incremental deployment of newer, and more secure, cipher
    suites.
 
-5.  IANA Considerations
+7.  IANA Considerations
 
    This document makes no requests from IANA.
 
-6.  Acknowledgements
+8.  Acknowledgements
 
-   Martin Thompson, Paul Kyzivat, Jonathan Lennox and Roman Shpount
+   Martin Thomson, Paul Kyzivat, Jonathan Lennox and Roman Shpount
    provided valuable comments and input on this document.
 
+9.  Change Log
+
+   [RFC EDITOR NOTE: Please remove this section when publishing]
+
+   Changes from draft-ietf-mmusic-4572-update-01
 
 
 
-
-
-Holmberg                Expires November 6, 2016                [Page 4]
+Holmberg                Expires November 15, 2016               [Page 7]
 
 Internet-Draft             Updates to RFC 4572                  May 2016
 
 
-7.  Change Log
+   o  Changes based on comments from Martin Thomson.
 
-   [RFC EDITOR NOTE: Please remove this section when publishing]
+   o  - Editorial fixes
+
+   o  New SDP 'fpl' attribuge added.
+
+   o
 
    Changes from draft-ietf-mmusic-4572-update-00
 
@@ -247,7 +419,9 @@ Internet-Draft             Updates to RFC 4572                  May 2016
 
    o  IANA considerations section added.
 
-8.  Normative References
+10.  References
+
+10.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -265,21 +439,37 @@ Internet-Draft             Updates to RFC 4572                  May 2016
               DOI 10.17487/RFC4572, July 2006,
               <http://www.rfc-editor.org/info/rfc4572>.
 
+
+
+
+
+
+Holmberg                Expires November 15, 2016               [Page 8]
+
+Internet-Draft             Updates to RFC 4572                  May 2016
+
+
    [RFC4566]  Handley, M., Jacobson, V., and C. Perkins, "SDP: Session
               Description Protocol", RFC 4566, DOI 10.17487/RFC4566,
               July 2006, <http://www.rfc-editor.org/info/rfc4566>.
 
+10.2.  Informative References
 
+   [RFC5576]  Lennox, J., Ott, J., and T. Schierl, "Source-Specific
+              Media Attributes in the Session Description Protocol
+              (SDP)", RFC 5576, DOI 10.17487/RFC5576, June 2009,
+              <http://www.rfc-editor.org/info/rfc5576>.
 
+   [I-D.ietf-mmusic-sdp-mux-attributes]
+              Nandakumar, S., "A Framework for SDP Attributes when
+              Multiplexing", draft-ietf-mmusic-sdp-mux-attributes-12
+              (work in progress), January 2016.
 
-
-
-
-
-Holmberg                Expires November 6, 2016                [Page 5]
-
-Internet-Draft             Updates to RFC 4572                  May 2016
-
+   [I-D.ietf-mmusic-sdp-bundle-negotiation]
+              Holmberg, C., Alvestrand, H., and C. Jennings,
+              "Negotiating Media Multiplexing Using the Session
+              Description Protocol (SDP)", draft-ietf-mmusic-sdp-bundle-
+              negotiation-29 (work in progress), April 2016.
 
 Author's Address
 
@@ -310,26 +500,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Holmberg                Expires November 6, 2016                [Page 6]
+Holmberg                Expires November 15, 2016               [Page 9]
