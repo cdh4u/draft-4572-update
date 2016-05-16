@@ -91,7 +91,7 @@
 		</t>
     </section>
 
-    
+
     <section title="SDP fpl Attribute" anchor="sec-dcon-attr">
         <t>
             The SDP 'fpl' attribute contains a unique value associated with a
@@ -102,24 +102,24 @@
 
     attribute              =/ fingerprint-list
 
-    fingerprint-list       =  "fpl" ":" hash-func SP fingerprint 
-                                        *(":" hash-func SP fingerprint)
-                        
+    fingerprint-list       =  "fpl" ":" hash-func "=" fingerprint
+                                        *("," hash-func "=" fingerprint)
+
     ;hash-func is defined in RFC 4572
     ;fingerprint is defined in RFC 4572
-   
+
     Example:
-    
-    a=fpl:SHA-1 \
-          4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB \
-          SHA-256 \
+
+    a=fpl:SHA-1 = \
+          4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB, \
+          SHA-256 = \
           4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
 
-   
+
            	]]></artwork>
 		</figure>
         <t>
-            The SDP 'fpl' attribute contains one or more fingerprint hash values 
+            The SDP 'fpl' attribute contains one or more fingerprint hash values
             associated with a certificate. Multiple attributes can be associated
             with a gien SDP media description ("m=" line), in case multiple
             certificates are associated with that "m=" line.
@@ -130,7 +130,7 @@
             in SDP offers and answers.
         </t>
         <t>
-            The mux category <xref target="I-D.ietf-mmusic-sdp-mux-attributes"/> 
+            The mux category <xref target="I-D.ietf-mmusic-sdp-mux-attributes"/>
             for the 'fpl' attribute is 'IDENTICAL', which means that
             the attribute value must be identical across all media descriptions
             being multiplexed <xref target="I-D.ietf-mmusic-sdp-bundle-negotiation"/>.
@@ -138,14 +138,14 @@
         <t>
             For RTP-based media, the 'fpl' attribute apply to whole associated
             media description. The attribute MUST NOT be defined per source (using the
-            SDP 'ssrc' attribute <xref format="default" pageno="false" target="RFC5576"/>). 
+            SDP 'ssrc' attribute <xref format="default" pageno="false" target="RFC5576"/>).
         </t>
         <t>
-            The SDP Offer/Answer <xref format="default" pageno="false" target="RFC3264"/> 
+            The SDP Offer/Answer <xref format="default" pageno="false" target="RFC3264"/>
             procedures associated with the attribute are defined in <xref target="sec-oa"/>
         </t>
     </section>
-    
+
     <section title="SDP Offer/Answer Procedures" anchor="sec-oa">
         <section title="General">
             <t>
@@ -154,28 +154,28 @@
                 TLS/DTLS protected media.
             </t>
         </section>
-        
+
         <section title="Generating the Initial SDP Offer" anchor="sec-oa-offer">
-            <t>   
+            <t>
                 When the offerer sends the initial offer, it MUST associate
-                one or more SDP 'fpl' attributes with an SDP media description 
+                one or more SDP 'fpl' attributes with an SDP media description
                 ("m=" line) describing TLS/DTLS protected media. Each attribute
                 contains one or more fingerprint values calculated for a given
                 certificate.
             </t>
             <t>
-                In addition, the offerer MAY associate one or more 
-                SDP 'fingerprint' attributes with the "m=" line, according to 
+                In addition, the offerer MAY associate one or more
+                SDP 'fingerprint' attributes with the "m=" line, according to
                 the procedures in <xref format="default" pageno="false" target="RFC4572"/>.
             </t>
             <t>
-                If the offerer associates both 'fpl' attributes and 'fingerprint' 
+                If the offerer associates both 'fpl' attributes and 'fingerprint'
                 attributes with the "m=" line in the offer, the fingerprint value included in any
-                'fingerprint' attribute MUST also be included in the 'fpl' attribute 
+                'fingerprint' attribute MAY also be included in the 'fpl' attribute
                 associated with the same certificate.
             </t>
         </section>
-        <section title="Generating the Answer">       
+        <section title="Generating the Answer">
             <t>
                 When an answerer receives an offer that contains one or more
                 SDP 'fpl' attributes, and if the answerer accepts the "m=" line,
@@ -184,18 +184,18 @@
             </t>
             <t>
                 If the offer does not contain any 'fpl' attribute, the answerer
-                SHOULD NOT associate any 'fpl' attribute with the corresponding
+                MUST NOT associate any 'fpl' attribute with the corresponding
                 "m=" line in the answer.
             </t>
             <t>
-                If the offer contains one or more SDP 'fingerprint' attributes, 
-                the answerer follows the procedures in <xref format="default" pageno="false" 
+                If the offer contains one or more SDP 'fingerprint' attributes,
+                the answerer follows the procedures in <xref format="default" pageno="false"
                 target="RFC4572"/> for generating the answer.
             </t>
             <t>
-                If the answerer associates both 'fpl' attributes and 'fingerprint' 
+                If the answerer associates both 'fpl' attributes and 'fingerprint'
                 attributes with the "m=" line in the answer, the fingerprint value included in any
-                'fingerprint' attribute MUST also be included in the 'fpl' attribute 
+                'fingerprint' attribute MUST also be included in the 'fpl' attribute
                 associated with the same certificate.
             </t>
         </section>
@@ -210,7 +210,7 @@
                 requests a new TLS connection/DTLS association to be established, the offerer
                 MUST associate SDP 'fpl' attribute(s) that include the hash values associated
                 with the previously negotiated TLS connection/DTLS association. The offerer
-                MUST NOT associate SDP 'fpl' attributes including fingerprints for non-uses 
+                MUST NOT associate SDP 'fpl' attributes including fingerprints for non-uses
                 certificates.
             </t>
             <t>
@@ -224,10 +224,10 @@
             </t>
             <t>
                 [ref-to-draft-dtls-sdp] describes the procedures for negotiating a new DTLS association.
-            </t>            
+            </t>
         </section>
 	</section>
-     
+
     <section title="Update to RFC 4572">
         <t>
             This section updates section 5 of RFC 4572.
@@ -277,18 +277,18 @@ NEW TEXT:
 NEW TEXT:
 
     Multiple SDP fingerprint attributes can be associated with an m-
-    line. This can occur occur if fingerprints associated with multiple 
-    certificates have been calculated, e.g. for cases where multiple 
-    certificates will be used (e.g. separate certificates for RTP and 
-    RTCP), or where it is not known which certificate will be used when 
+    line. This can occur occur if fingerprints associated with multiple
+    certificates have been calculated, e.g. for cases where multiple
+    certificates will be used (e.g. separate certificates for RTP and
+    RTCP), or where it is not known which certificate will be used when
     the fingerprints are exchanged. In such cases, one fingerprint MUST be
     calculated for each possible certificate. If an endpoint wishes to
     calculate multiple fingerprints for a given certificate, the endpoint
     MUST use the mechanism in <ref-to-this-draft> in order to provide them
     to the peer.
 
-    An endpoint MUST be able to the received fingerprint(s) with the 
-    certificate(s) that will eventually be used. If there is no match, 
+    An endpoint MUST be able to the received fingerprint(s) with the
+    certificate(s) that will eventually be used. If there is no match,
     the endpoint MUST NOT establish the TLS connection.
 
     NOTE: The SDP fingerprint attribute does not contain a reference to
