@@ -27,15 +27,11 @@
     <date year="2016" />
     <area>RAI</area>
     <abstract>
-        <t>
-            This document defines a new SDP attribute, 'fpl', which can be used by SDP
-            offerers and answerers to carry fingerprints associated with a certificate.
-        </t>
 		<t>
             This document updates RFC 4572 by clarifying the usage of multiple SDP 'fingerprint'
             attributes with a single TLS connection. The document also updates the preferred
             cipher suite to be used, and removes the requirement to use the same hash function
-            for calculating the certificate fingerprint that is used to calculate the
+            for calculating a certificate fingerprint that is used to calculate the
             certificate signature.
         </t>
     </abstract>
@@ -53,9 +49,8 @@
             value (fingerprint) associated with a certificate. However, RFC 4572 is currently unclear on whether
             multiple 'fingerprint' attributes can be associated with a single SDP media description ("m= line")
             <xref format="default" pageno="false" target="RFC4566"/>, and the associated semantics.
-            Multiple fingerprints are needed if an endpoints wants to provide multiple fingerprints associated
-            with a single certificate, or if an endpoints wants to provide fingerprints associated with
-            multiple certificate. For example, with RTP-based media, an endpoint might use different 
+            Multiple fingerprints are needed if an endpoints wants to provide fingerprints associated with
+            multiple certificates. For example, with RTP-based media, an endpoint might use different 
             certificates for RTP and RTCP.
         </t>
         <t>
@@ -67,20 +62,19 @@
             hash function used to calculate the certificate signature. That requirement might
             prevent usage of newer, stronger and more collision-safe hash functions for calculating
             certificate fingerprints. This change also requires that multiple 'fingerprint' attributes can
-            be associated with a single "m=" line, so that implementations are able to provide hashes
-            generated with updated hash functions alongside those that are needed to interoperate
+            be associated with a single "m=" line, so that implementations are able to provide fingerprints
+            calculated using updated hash functions alongside those that are needed to interoperate
             with existing implementations.
         </t>
 		<t>
             This document updates RFC 4572 <xref format="default" pageno="false" target="RFC4572"/>
             by clarifying the usage of multiple SDP 'fingerprint' attributes. It is clarified that
             multiple 'fingerprint' attributes can be used to carry fingerprints, calculated using
-            different hash functions, associated with a given certificate, but the attribute cannot
-            be used to carry fingerprints associated with multiple certificates.
-        </t>
-        <t>
-            This document also defines a new SDP attribute, 'fpl', which can be used to carry multiple
-            fingerprints associated with a single certificate.
+            different hash functions, associated with a given certificate, and to carry fingerprints
+            associated with multiple certificates. The fingerprint matching procedure, when multiple
+            fingerprints are provided, are also clarified. The document also updates the preferred 
+            cipher suite to be used, and removes the requirement to use the same hash function for 
+            calculating a certificate fingerprint and certificate signature.
         </t>
     </section>
 
@@ -91,161 +85,6 @@
 			document are to be interpreted as described in <xref target="RFC2119"></xref>.
 		</t>
     </section>
-
-    
-    <section title="SDP fpl Attribute" anchor="sec-fpl-attr">
-        <section title="General" anchor="sec-fpl-attr-gen">
-            <t>
-                The SDP 'fpl' (abbreviation of FingerPrint List) attribute is used to carry one or 
-                many fingerprints associated with a certificate. Any given attribute instance can 
-                only be associated with a single certificate. Multiple 'fpl' attributes can be associated
-                with a given SDP media description ("m=" line) in order to carry fingerprints associated 
-                with multiple certificates.
-            </t>
-            <t>
-                NOTE: The difference between the SDP 'fpl' attribute and the  SDP 'fingerprint' attribute
-                <xref format="default" pageno="false" target="RFC4572"/>and the SDP 'fpl' is that the 'fpl' 
-                attribute can be used to associate multiple fingerprints (calculated using different hash functions) 
-                with a certificate. The 'fingerprint' attribute can only be used to carry a single fingerprint.
-            </t>
-            <t>
-                When an endpoint matches
-            
-            </t>
-        </section>
-        <section title="Syntax" anchor="sec-fpl-attr-syn">
-            <figure>
-                <artwork align="left"><![CDATA[
-
-    attribute              =/ fingerprint-list
-
-    fingerprint-list       =  "fpl" ":" hash-func SP fingerprint 
-                                        *(":" hash-func SP fingerprint)
-                        
-    ;hash-func is defined in RFC 4572
-    ;fingerprint is defined in RFC 4572
-   
-    Example:
-    
-    a=fpl:SHA-1 \
-          4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB \
-          SHA-256 \
-          4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
-
-   
-                ]]></artwork>
-            </figure>        
-            <t>
-                There is no default value defined for the SDP 'fpl' attribute.
-                Implementations that wish to use the attribute MUST explicitly include it
-                in SDP offers and answers.
-            </t>
-            <t>
-                The 'fpl' attribute may be either a session-level or a media-
-                level SDP attribute. If it is a session-level attribute, it applies
-                to all SDP media descriptions ("m=" lines) with which no media-level 
-                'fpl' attribute has been associated.
-            </t>
-            <t>
-                The mux category <xref target="I-D.ietf-mmusic-sdp-mux-attributes"/> 
-                for the 'fpl' attribute is 'IDENTICAL', which means that
-                the attribute value must be identical across all media descriptions
-                being multiplexed <xref target="I-D.ietf-mmusic-sdp-bundle-negotiation"/>.
-            </t>
-            <t>
-                For SDP media descriptions ("m=" lines) describing RTP-based media, the 'fpl' 
-                attribute applies to the whole media description. The attribute MUST NOT be 
-                defined per source (using the SDP 'ssrc' attribute <xref format="default" 
-                pageno="false" target="RFC5576"/>). 
-            </t>
-            <t>
-                The SDP Offer/Answer <xref format="default" pageno="false" target="RFC3264"/> 
-                procedures associated with the attribute are defined in <xref target="sec-oa"/>
-            </t>
-        </section>
-    </section>
-    
-    <section title="SDP Offer/Answer Procedures" anchor="sec-oa">
-        <section title="General">
-            <t>
-                This section defines the SDP Offer/Answer procedures for the SDP 'fpl' attribute.
-                The procedures are defined for any SDP media description ("m=" line) describing
-                TLS/DTLS protected media.
-            </t>
-        </section>
-        
-        <section title="Generating the Initial SDP Offer" anchor="sec-oa-offer">
-            <t>   
-                When the offerer sends the initial offer, it MUST associate
-                one or more SDP 'fpl' attributes with an SDP media description 
-                ("m=" line) describing TLS/DTLS protected media. Each attribute
-                contains one or more fingerprint values calculated for a given
-                certificate.
-            </t>
-            <t>
-                In addition, the offerer MAY associate one or more 
-                SDP 'fingerprint' attributes with the "m=" line, according to 
-                the procedures in <xref format="default" pageno="false" target="RFC4572"/>.
-            </t>
-            <t>
-                If the offerer associates both 'fpl' attributes and 'fingerprint' 
-                attributes with the "m=" line in the offer, the fingerprint value included in any
-                'fingerprint' attribute MUST also be included in the 'fpl' attribute 
-                associated with the same certificate.
-            </t>
-        </section>
-        <section title="Generating the Answer">       
-            <t>
-                When an answerer receives an offer that contains one or more
-                SDP 'fpl' attributes, and if the answerer accepts the "m=" line,
-                the answerer MUST associate one or more 'fpl' attributes with the
-                corresponding "m=" line in the answer.
-            </t>
-            <t>
-                If the offer does not contain any 'fpl' attribute, the answerer
-                SHOULD NOT associate any 'fpl' attribute with the corresponding
-                "m=" line in the answer.
-            </t>
-            <t>
-                If the offer contains one or more SDP 'fingerprint' attributes, 
-                the answerer follows the procedures in <xref format="default" pageno="false" 
-                target="RFC4572"/> for generating the answer.
-            </t>
-            <t>
-                If the answerer associates both 'fpl' attributes and 'fingerprint' 
-                attributes with the "m=" line in the answer, the fingerprint value included in any
-                'fingerprint' attribute MUST also be included in the 'fpl' attribute 
-                associated with the same certificate.
-            </t>
-        </section>
-        <section title="Offerer Processing of the SDP Answer">
-            <t>
-                TBD
-            </t>
-        </section>
-        <section title="Modifying the Session">
-            <t>
-                When an offerer sends a subsequent offer, and the offerer does not explicitly
-                requests a new TLS connection/DTLS association to be established, the offerer
-                MUST associate SDP 'fpl' attribute(s) that include the hash values associated
-                with the previously negotiated TLS connection/DTLS association. The offerer
-                MUST NOT associate SDP 'fpl' attributes including fingerprints for non-uses 
-                certificates.
-            </t>
-            <t>
-                When an offerer sends a subsequent offer, if the offerer explicitly requests
-                a new TLS connection/DTLS association to be established, the offerer follow
-                the procedures in <xref format="default" pageno="false" target="sec-oa-offer"/>.
-            </t>
-            <t>
-                <xref format="default" pageno="false" target="RFC4572"/> describes the procedures
-                for negotiating a new TLS connection.
-            </t>
-            <t>
-                [ref-to-draft-dtls-sdp] describes the procedures for negotiating a new DTLS association.
-            </t>            
-        </section>
-	</section>
      
     <section title="Update to RFC 4572">
         <t>
@@ -295,22 +134,31 @@ NEW TEXT:
 
 NEW TEXT:
 
-    Multiple SDP fingerprint attributes can be associatd with an m-
-    line, in order to carry fingerprints calculated using
-    different hash functions for a given cerfificiate. All fingerprints
-    carried in SDP fingerprint attributes, associated with a given m- line,
-    MUST be associated with the same certificate.
+    Multiple SDP fingerprint attributes can be associated with an m- 
+    line. This can occur if multiple fingerprints have been calculated
+    for a certificate, using different hash functions. It can also
+    occur if one or more fingerprints associated with multiple 
+    certificates have been calculated, e.g. for cases where multiple 
+    certificates will be used for media associated with an m- line
+    (e.g. separate certificates for RTP and RTCP), or where it is not
+    known which certificate will be used when the fingerprints are
+    exchanged. In such cases, one or more fingerprints MUST be 
+    calculated for each possible certificate.
     
-    In some cases endpoints want to provide fingerprints 
-    associated with multiple cerficiates (e.g. if separate certificates
-    are used for RTP and RTCP). In such cases, endpoints MUST use the 
-    mechanism in <ref-to-this-draft> in order to provide them
-    to the peer.
-    
-    An endpoint MUST be able to match at least one of the received
-    fingerprints with the used cerficiate. If there is no match, 
-    the endpoint MUST NOT establish the TLS connection.    
-    
+    If fingerprints associated with multiple certificates are 
+    calculated, the same set of fingerprints (using the same hash
+    functions) MUST be calculated for each certificate associated
+    with the m- line.
+        
+    For each used certificate, an endpoint MUST be able to match at
+    least one fingerprint, calculated using the hash function that the
+    endpoint supports and considers most secure, with the used
+    certificate. If there is no match, the endpoint MUST NOT establish
+    the TLS connection. In addition, the endpoint MAY also test 
+    fingerprints calculated using other hash functions for a match.
+    For each hash function checked, one of the fingerprints MUST match 
+    the used certificate.
+        
     NOTE: The SDP fingerprint attribute does not contain a reference to
     a specific certificate. Endpoints need to compare the fingerprint
     with a certificate hash in order to look for a match.
@@ -348,8 +196,9 @@ NEW TEXT:
                 <list style="symbols">
                     <t>Changes based on comments from Martin Thomson.</t>
                     <t>- Editorial fixes</t>
-                    <t>New SDP 'fpl' attribuge added.</t>
-                    <t></t>
+                    <t>Changes in handling of multiple fingerprints.</t>
+                    <t>- Sender must send same set of hash functions for each offered certificate.</t>
+                    <t>- Receiver must check the hash function it considers most secure for a match. It may check other hash functions.</t>
                 </list>
             </t>
             <t>Changes from draft-ietf-mmusic-4572-update-00
