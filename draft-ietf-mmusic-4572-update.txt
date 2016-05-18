@@ -247,10 +247,10 @@ Internet-Draft             Updates to RFC 4572                  May 2016
      least one fingerprint, calculated using the hash function that the
      endpoint supports and considers most secure, with the used
      certificate. If there is no match, the endpoint MUST NOT establish
-     the TLS connection. In addition, the endpoint MAY also test
-     fingerprints calculated using other hash functions for a match.
-     For each hash function checked, one of the fingerprints MUST match
-     the used certificate.
+     the TLS connection. In addition, the endpoint MAY also check other
+     fingerprints (calculated using other hash functions) that it has
+     received for a match. For each hash function checked, one of the
+     received fingerprints MUST match the used certificate.
 
      NOTE: The SDP fingerprint attribute does not contain a reference to
      a specific certificate. Endpoints need to compare the fingerprint
