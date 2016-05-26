@@ -1,11 +1,12 @@
 
 
 
+
 Network Working Group                                        C. Holmberg
 Internet-Draft                                                  Ericsson
-Updates: 4572 (if approved)                                 May 21, 2016
+Updates: 4572 (if approved)                                 May 26, 2016
 Intended status: Standards Track
-Expires: November 22, 2016
+Expires: November 27, 2016
 
 
                           Updates to RFC 4572
@@ -15,10 +16,10 @@ Abstract
 
    This document updates RFC 4572 by clarifying the usage of multiple
    SDP 'fingerprint' attributes with a single TLS connection.  The
-   document also updates the preferred cipher suite to be used, and
-   removes the requirement to use the same hash function for calculating
-   a certificate fingerprint that is used to calculate the certificate
-   signature.
+   document also replaces the preferred cipher suite with a mandate to
+   support a stronger cipher suite, and removes the requirement to use
+   the same hash function for calculating a certificate fingerprint that
+   is used to calculate the certificate signature.
 
 Status of This Memo
 
@@ -35,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on November 22, 2016.
+   This Internet-Draft will expire on November 27, 2016.
 
 Copyright Notice
 
@@ -52,7 +53,7 @@ Copyright Notice
 
 
 
-Holmberg                Expires November 22, 2016               [Page 1]
+Holmberg                Expires November 27, 2016               [Page 1]
 
 Internet-Draft             Updates to RFC 4572                  May 2016
 
@@ -68,7 +69,7 @@ Table of Contents
      3.1.  Update to the sixth paragraph of section 5  . . . . . . .   3
      3.2.  New paragraphs to the end of section 5  . . . . . . . . .   4
    4.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
-   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
+   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
    6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
    7.  Change Log  . . . . . . . . . . . . . . . . . . . . . . . . .   6
    8.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
@@ -108,7 +109,7 @@ Table of Contents
 
 
 
-Holmberg                Expires November 22, 2016               [Page 2]
+Holmberg                Expires November 27, 2016               [Page 2]
 
 Internet-Draft             Updates to RFC 4572                  May 2016
 
@@ -120,9 +121,10 @@ Internet-Draft             Updates to RFC 4572                  May 2016
    certificate, and to carry fingerprints associated with multiple
    certificates.  The fingerprint matching procedure, when multiple
    fingerprints are provided, are also clarified.  The document also
-   updates the preferred cipher suite to be used, and removes the
-   requirement to use the same hash function for calculating a
-   certificate fingerprint and certificate signature.
+   replaces the preferred cipher suite with a mandate to support a
+   stronger cipher suite, and removes the requirement to use the same
+   hash function for calculating a certificate fingerprint and
+   certificate signature.
 
 2.  Conventions
 
@@ -163,8 +165,7 @@ Internet-Draft             Updates to RFC 4572                  May 2016
 
 
 
-
-Holmberg                Expires November 22, 2016               [Page 3]
+Holmberg                Expires November 27, 2016               [Page 3]
 
 Internet-Draft             Updates to RFC 4572                  May 2016
 
@@ -194,7 +195,8 @@ Internet-Draft             Updates to RFC 4572                  May 2016
     Following RFC 3279 [7] as updated by RFC 4055 [9], therefore, the
     defined hash functions are 'SHA-1' [11] [19], 'SHA-224' [11],
     'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11], 'MD5' [12], and
-    'MD2' [13], with 'SHA-256' preferred.  A new IANA registry of Hash
+    'MD2' [13]. Implementations MUST, as a minimum, calculate and
+    validate a fingerprint using 'SHA-256'. A new IANA registry of Hash
     Function Textual Names, specified in Section 8, allows for addition
     of future tokens, but they may only be added if they are included
     in RFCs that update or obsolete RFC 3279 [7].
@@ -219,8 +221,7 @@ Internet-Draft             Updates to RFC 4572                  May 2016
 
 
 
-
-Holmberg                Expires November 22, 2016               [Page 4]
+Holmberg                Expires November 27, 2016               [Page 4]
 
 Internet-Draft             Updates to RFC 4572                  May 2016
 
@@ -236,7 +237,9 @@ Internet-Draft             Updates to RFC 4572                  May 2016
      (e.g. if separate certificates are used for RTP and RTCP), or where
      it is not known which certificate will be used when the
      fingerprints are exchanged. In such cases, one or more fingerprints
-     MUST be calculated for each possible certificate.
+     MUST be calculated for each possible certificate. An endpoint MUST,
+     as a minimum, calculate a fingerprint using the 'SHA-256' hash
+     function for each possible certificate.
 
      If fingerprints associated with multiple certificates are
      calculated, the same set of hash functions MUST be used to
@@ -246,11 +249,13 @@ Internet-Draft             Updates to RFC 4572                  May 2016
      For each used certificate, an endpoint MUST be able to match at
      least one fingerprint, calculated using the hash function that the
      endpoint supports and considers most secure, with the used
-     certificate. If there is no match, the endpoint MUST NOT establish
-     the TLS connection. In addition, the endpoint MAY also check
-     fingerprints calculated using other hash functions that it has
-     received for a match. For each hash function checked, one of the
-     received fingerprints MUST match the used certificate.
+     certificate. If a fingerprint calculated using the 'SHA-256' hash
+     function is present, the endpoint MUST be able to match it. If
+     there is no match, the endpoint MUST NOT establish the TLS
+     connection. In addition, the endpoint MAY also check fingerprints
+     calculated using other hash functions that it has received for a
+     match. For each hash function checked, one of the received
+     fingerprints MUST match the used certificate.
 
      NOTE: The SDP fingerprint attribute does not contain a reference to
      a specific certificate. Endpoints need to compare the fingerprint
@@ -265,9 +270,6 @@ Internet-Draft             Updates to RFC 4572                  May 2016
    agility, and incremental deployment of newer, and more secure, cipher
    suites.
 
-5.  IANA Considerations
-
-   This document makes no requests from IANA.
 
 
 
@@ -275,11 +277,14 @@ Internet-Draft             Updates to RFC 4572                  May 2016
 
 
 
-
-Holmberg                Expires November 22, 2016               [Page 5]
+Holmberg                Expires November 27, 2016               [Page 5]
 
 Internet-Draft             Updates to RFC 4572                  May 2016
 
+
+5.  IANA Considerations
+
+   This document makes no requests from IANA.
 
 6.  Acknowledgements
 
@@ -291,6 +296,9 @@ Internet-Draft             Updates to RFC 4572                  May 2016
    [RFC EDITOR NOTE: Please remove this section when publishing]
 
    Changes from draft-ietf-mmusic-4572-update-02
+
+   o  Mandatory to provide and validate fingerprint calculated using
+      SHA-256.
 
    o  Editorial fixes based on comments from Martin Thomson.
 
@@ -322,20 +330,19 @@ Internet-Draft             Updates to RFC 4572                  May 2016
 
    o  - Additional text added to security considerations section.
 
+
+
+
+Holmberg                Expires November 27, 2016               [Page 6]
+
+Internet-Draft             Updates to RFC 4572                  May 2016
+
+
    Changes from draft-holmberg-mmusic-4572-update-01
 
    o  Adopted WG document (draft-ietf-mmusic-4572-update-00) submitted.
 
    o  IANA considerations section added.
-
-
-
-
-
-Holmberg                Expires November 22, 2016               [Page 6]
-
-Internet-Draft             Updates to RFC 4572                  May 2016
-
 
 8.  Normative References
 
@@ -382,10 +389,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-Holmberg                Expires November 22, 2016               [Page 7]
+Holmberg                Expires November 27, 2016               [Page 7]
