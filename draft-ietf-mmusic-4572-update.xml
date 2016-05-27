@@ -120,7 +120,7 @@ NEW TEXT:
    Following RFC 3279 [7] as updated by RFC 4055 [9], therefore, the
    defined hash functions are 'SHA-1' [11] [19], 'SHA-224' [11],
    'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11], 'MD5' [12], and
-   'MD2' [13]. Implementations MUST, as a minimum, calculate and
+   'MD2' [13]. Implementations SHOULD, as a minimum, calculate and
    validate a fingerprint using 'SHA-256'. A new IANA registry of Hash
    Function Textual Names, specified in Section 8, allows for addition
    of future tokens, but they may only be added if they are included
@@ -145,9 +145,9 @@ NEW TEXT:
     (e.g. if separate certificates are used for RTP and RTCP), or where
     it is not known which certificate will be used when the
     fingerprints are exchanged. In such cases, one or more fingerprints
-    MUST be calculated for each possible certificate. An endpoint MUST,
-    as a minimum, calculate a fingerprint using the 'SHA-256' hash
-    function for each possible certificate.
+    MUST be calculated for each possible certificate. An endpoint
+    SHOULD, as a minimum, calculate a fingerprint using the 'SHA-256'
+    hash function for each possible certificate.
 
     If fingerprints associated with multiple certificates are
     calculated, the same set of hash functions MUST be used to
@@ -158,12 +158,13 @@ NEW TEXT:
     least one fingerprint, calculated using the hash function that the
     endpoint supports and considers most secure, with the used
     certificate. If a fingerprint calculated using the 'SHA-256' hash
-    function is present, the endpoint MUST be able to match it. If
-    there is no match, the endpoint MUST NOT establish the TLS
-    connection. In addition, the endpoint MAY also check fingerprints
-    calculated using other hash functions that it has received for a
-    match. For each hash function checked, one of the received
-    fingerprints MUST match the used certificate.
+    function is present, the endpoint SHOULD check if or a match. If
+    the checked fingerprint does not match the used certificate, the
+    endpoint MUST NOT establish the TLS connection. In addition, the
+    endpoint MAY also check fingerprints calculated using other hash
+    functions that it has received for a match. For each hash function
+    checked, one of the received fingerprints calculated using the hash
+    function MUST match the used certificate.
 
     NOTE: The SDP fingerprint attribute does not contain a reference to
     a specific certificate. Endpoints need to compare the fingerprint
