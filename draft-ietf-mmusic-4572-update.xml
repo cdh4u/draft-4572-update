@@ -29,9 +29,9 @@
     <abstract>
 		<t>
             This document updates RFC 4572 by clarifying the usage of multiple SDP 'fingerprint'
-            attributes with a single TLS connection. The document also updates the preferred
-            cipher suite to be used, and removes the requirement to use the same hash function
-            for calculating a certificate fingerprint that is used to calculate the
+            attributes with a single TLS connection. The document also updates the preferred cipher
+            suite with a stronger cipher suite, and removes the requirement to use the same hash
+            function for calculating a certificate fingerprint that is used to calculate the
             certificate signature.
         </t>
     </abstract>
@@ -50,7 +50,7 @@
             multiple 'fingerprint' attributes can be associated with a single SDP media description ("m= line")
             <xref format="default" pageno="false" target="RFC4566"/>, and the associated semantics.
             Multiple fingerprints are needed if an endpoints wants to provide fingerprints associated with
-            multiple certificates. For example, with RTP-based media, an endpoint might use different 
+            multiple certificates. For example, with RTP-based media, an endpoint might use different
             certificates for RTP and RTCP.
         </t>
         <t>
@@ -72,9 +72,9 @@
             multiple 'fingerprint' attributes can be used to carry fingerprints, calculated using
             different hash functions, associated with a given certificate, and to carry fingerprints
             associated with multiple certificates. The fingerprint matching procedure, when multiple
-            fingerprints are provided, are also clarified. The document also updates the preferred 
-            cipher suite to be used, and removes the requirement to use the same hash function for 
-            calculating a certificate fingerprint and certificate signature.
+            fingerprints are provided, are also clarified. The document also updates the preferred
+            cipher suite with a stronger cipher suite, and removes the requirement to use the same
+            hash function for calculating a certificate fingerprint and certificate signature.
         </t>
     </section>
 
@@ -85,7 +85,7 @@
 			document are to be interpreted as described in <xref target="RFC2119"></xref>.
 		</t>
     </section>
-     
+
     <section title="Update to RFC 4572">
         <t>
             This section updates section 5 of RFC 4572.
@@ -119,7 +119,7 @@ NEW TEXT:
    Following RFC 3279 [7] as updated by RFC 4055 [9], therefore, the
    defined hash functions are 'SHA-1' [11] [19], 'SHA-224' [11],
    'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11], 'MD5' [12], and
-   'MD2' [13], with 'SHA-256' preferred.  A new IANA registry of Hash
+   'MD2' [13], with 'SHA-256' preferred. A new IANA registry of Hash
    Function Textual Names, specified in Section 8, allows for addition
    of future tokens, but they may only be added if they are included
    in RFCs that update or obsolete RFC 3279 [7].
@@ -134,31 +134,39 @@ NEW TEXT:
 
 NEW TEXT:
 
-    Multiple SDP fingerprint attributes can be associated with an m- 
+    Multiple SDP fingerprint attributes can be associated with an m-
     line. This can occur if multiple fingerprints have been calculated
     for a certificate using different hash functions. It can also
-    occur if one or more fingerprints associated with multiple 
+    occur if one or more fingerprints associated with multiple
     certificates have been calculated. This might be needed if multiple
-    certificates will be used for media associated with an m- line 
+    certificates will be used for media associated with an m- line
     (e.g. if separate certificates are used for RTP and RTCP), or where
-    it is not known which certificate will be used when the 
+    it is not known which certificate will be used when the
     fingerprints are exchanged. In such cases, one or more fingerprints
-    MUST be calculated for each possible certificate.
-        
-    If fingerprints associated with multiple certificates are 
+    MUST be calculated for each possible certificate. An endpoint
+    MUST, as a minimum, calculate a fingerprint using the 'SHA-256'
+    hash function algorithm for each possible certificate, unless the
+    endpoint knows that the peer supports a stronger algorithm, or
+    unless the endpoint knows that the peer has not been upgraded to
+    support the 'SHA-256' algorithm, or unless the endpoint is used for
+    a service, or within an environment that mandates usage of a
+    stronger algorithm.
+
+    If fingerprints associated with multiple certificates are
     calculated, the same set of hash functions MUST be used to
     calculate fingerprints for each certificate associated with the
     m- line.
-        
+
     For each used certificate, an endpoint MUST be able to match at
     least one fingerprint, calculated using the hash function that the
     endpoint supports and considers most secure, with the used
-    certificate. If there is no match, the endpoint MUST NOT establish
-    the TLS connection. In addition, the endpoint MAY also check 
-    fingerprints calculated using other hash functions that it has
-    received for a match. For each hash function checked, one of the
-    received fingerprints MUST match the used certificate.
-    
+    certificate. If the checked fingerprint does not match the used
+    certificate, the endpoint MUST NOT establish the TLS connection. In
+    addition, the endpoint MAY also check fingerprints calculated using
+    other hash functions that it has received for a match. For each
+    hash function checked, one of the received fingerprints calculated
+    using the hash function MUST match the used certificate.
+
     NOTE: The SDP fingerprint attribute does not contain a reference to
     a specific certificate. Endpoints need to compare the fingerprint
     with a certificate hash in order to look for a match.
@@ -194,6 +202,7 @@ NEW TEXT:
 		<t>[RFC EDITOR NOTE: Please remove this section when publishing]</t>
             <t>Changes from draft-ietf-mmusic-4572-update-02
                 <list style="symbols">
+                    <t>Mandatory to provide and validate fingerprint calculated using SHA-256.</t>
                     <t>Editorial fixes based on comments from Martin Thomson.</t>
                     <t>Non-used references removed.</t>
                 </list>
