@@ -4,7 +4,7 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc sortrefs="no" ?>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-03.txt" updates="4572" submissionType="IETF" xml:lang="en">
+<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-04.txt" updates="4572" submissionType="IETF" xml:lang="en">
   <front>
     <title>
 		Updates to RFC 4572
@@ -152,6 +152,14 @@ NEW TEXT:
     a service, or within an environment that mandates usage of a
     stronger algorithm.
 
+    When an endpoint receives one or more fingerprints from its peer,
+    and is about to calculate its own fingerprints, unless
+    the endpoint has other ways of knowing what hash functions the peer
+    supports the endpoint MUST calculate at least one fingerprint using
+    a hash function that was also used by the peer to calculate a
+    fingerprint. In addition, the endpoint MAY calculate fingerprints
+    using hash functions that were not used by the peer.
+
     If fingerprints associated with multiple certificates are
     calculated, the same set of hash functions MUST be used to
     calculate fingerprints for each certificate associated with the
@@ -200,9 +208,15 @@ NEW TEXT:
 
 	<section title="Change Log">
 		<t>[RFC EDITOR NOTE: Please remove this section when publishing]</t>
+            <t>Changes from draft-ietf-mmusic-4572-update-03
+                <list style="symbols">
+                  <t>Mandatory (except in specific situations) to provide a fingerprint calculated using SHA-256.</t>
+                  <t>When an endpoint receives fingerprints from its peer, the endpoint must (except in specific
+                    situations) calculate at least one fingerpint using a hash function that was also used by the peer.</t>
+                </list>
+            </t>
             <t>Changes from draft-ietf-mmusic-4572-update-02
                 <list style="symbols">
-                    <t>Mandatory to provide and validate fingerprint calculated using SHA-256.</t>
                     <t>Editorial fixes based on comments from Martin Thomson.</t>
                     <t>Non-used references removed.</t>
                 </list>

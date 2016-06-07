@@ -1,16 +1,15 @@
 
 
 
-
 Network Working Group                                        C. Holmberg
 Internet-Draft                                                  Ericsson
-Updates: 4572 (if approved)                                 June 1, 2016
+Updates: 4572 (if approved)                                 June 3, 2016
 Intended status: Standards Track
-Expires: December 3, 2016
+Expires: December 5, 2016
 
 
                           Updates to RFC 4572
-                  draft-ietf-mmusic-4572-update-03.txt
+                  draft-ietf-mmusic-4572-update-04.txt
 
 Abstract
 
@@ -36,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on December 3, 2016.
+   This Internet-Draft will expire on December 5, 2016.
 
 Copyright Notice
 
@@ -53,7 +52,7 @@ Copyright Notice
 
 
 
-Holmberg                Expires December 3, 2016                [Page 1]
+Holmberg                Expires December 5, 2016                [Page 1]
 
 Internet-Draft             Updates to RFC 4572                 June 2016
 
@@ -68,7 +67,7 @@ Table of Contents
    3.  Update to RFC 4572  . . . . . . . . . . . . . . . . . . . . .   3
      3.1.  Update to the sixth paragraph of section 5  . . . . . . .   3
      3.2.  New paragraphs to the end of section 5  . . . . . . . . .   4
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
    6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
    7.  Change Log  . . . . . . . . . . . . . . . . . . . . . . . . .   6
@@ -109,7 +108,7 @@ Table of Contents
 
 
 
-Holmberg                Expires December 3, 2016                [Page 2]
+Holmberg                Expires December 5, 2016                [Page 2]
 
 Internet-Draft             Updates to RFC 4572                 June 2016
 
@@ -165,7 +164,7 @@ Internet-Draft             Updates to RFC 4572                 June 2016
 
 
 
-Holmberg                Expires December 3, 2016                [Page 3]
+Holmberg                Expires December 5, 2016                [Page 3]
 
 Internet-Draft             Updates to RFC 4572                 June 2016
 
@@ -221,7 +220,7 @@ Internet-Draft             Updates to RFC 4572                 June 2016
 
 
 
-Holmberg                Expires December 3, 2016                [Page 4]
+Holmberg                Expires December 5, 2016                [Page 4]
 
 Internet-Draft             Updates to RFC 4572                 June 2016
 
@@ -246,6 +245,14 @@ Internet-Draft             Updates to RFC 4572                 June 2016
      a service, or within an environment that mandates usage of a
      stronger algorithm.
 
+     When an endpoint receives one or more fingerprints from its peer,
+     and is about to calculate its own fingerprints, unless
+     the endpoint has other ways of knowing what hash functions the peer
+     supports the endpoint MUST calculate at least one fingerprint using
+     a hash function that was also used by the peer to calculate a
+     fingerprint. In addition, the endpoint MAY calculate fingerprints
+     using hash functions that were not used by the peer.
+
      If fingerprints associated with multiple certificates are
      calculated, the same set of hash functions MUST be used to
      calculate fingerprints for each certificate associated with the
@@ -266,6 +273,14 @@ Internet-Draft             Updates to RFC 4572                 June 2016
      with a certificate hash in order to look for a match.
 
 
+
+
+
+Holmberg                Expires December 5, 2016                [Page 5]
+
+Internet-Draft             Updates to RFC 4572                 June 2016
+
+
 4.  Security Considerations
 
    This document improves security.  It updates the preferred hash
@@ -273,14 +288,6 @@ Internet-Draft             Updates to RFC 4572                 June 2016
    and handling of multiple fingerprints, the document also enables hash
    agility, and incremental deployment of newer, and more secure, cipher
    suites.
-
-
-
-
-Holmberg                Expires December 3, 2016                [Page 5]
-
-Internet-Draft             Updates to RFC 4572                 June 2016
-
 
 5.  IANA Considerations
 
@@ -295,10 +302,16 @@ Internet-Draft             Updates to RFC 4572                 June 2016
 
    [RFC EDITOR NOTE: Please remove this section when publishing]
 
-   Changes from draft-ietf-mmusic-4572-update-02
+   Changes from draft-ietf-mmusic-4572-update-03
 
-   o  Mandatory to provide and validate fingerprint calculated using
-      SHA-256.
+   o  Mandatory (except in specific situations) to provide a fingerprint
+      calculated using SHA-256.
+
+   o  When an endpoint receives fingerprints from its peer, the endpoint
+      must (except in specific situations) calculate at least one
+      fingerpint using a hash function that was also used by the peer.
+
+   Changes from draft-ietf-mmusic-4572-update-02
 
    o  Editorial fixes based on comments from Martin Thomson.
 
@@ -315,6 +328,15 @@ Internet-Draft             Updates to RFC 4572                 June 2016
    o  - Sender must send same set of hash functions for each offered
       certificate.
 
+
+
+
+
+Holmberg                Expires December 5, 2016                [Page 6]
+
+Internet-Draft             Updates to RFC 4572                 June 2016
+
+
    o  - Receiver must check the hash function it considers most secure
       for a match.  It may check other hash functions.
 
@@ -329,14 +351,6 @@ Internet-Draft             Updates to RFC 4572                 June 2016
       hash algorithms it considers safe.
 
    o  - Additional text added to security considerations section.
-
-
-
-
-Holmberg                Expires December 3, 2016                [Page 6]
-
-Internet-Draft             Updates to RFC 4572                 June 2016
-
 
    Changes from draft-holmberg-mmusic-4572-update-01
 
@@ -374,19 +388,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Holmberg                Expires December 3, 2016                [Page 7]
+Holmberg                Expires December 5, 2016                [Page 7]
