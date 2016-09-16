@@ -66,7 +66,7 @@
             calculated using updated hash functions alongside those that are needed to interoperate
             with existing implementations.
         </t>
-		<t>
+	<t>
             This document updates RFC 4572 <xref format="default" pageno="false" target="RFC4572"/>
             by clarifying the usage of multiple SDP 'fingerprint' attributes. It is clarified that
             multiple 'fingerprint' attributes can be used to carry fingerprints, calculated using
@@ -144,13 +144,15 @@ NEW TEXT:
     it is not known which certificate will be used when the
     fingerprints are exchanged. In such cases, one or more fingerprints
     MUST be calculated for each possible certificate. An endpoint
-    MUST, as a minimum, calculate a fingerprint using the 'SHA-256'
-    hash function algorithm for each possible certificate, unless the
-    endpoint knows that the peer supports a stronger algorithm, or
-    unless the endpoint knows that the peer has not been upgraded to
-    support the 'SHA-256' algorithm, or unless the endpoint is used for
-    a service, or within an environment that mandates usage of a
-    stronger algorithm.
+    MUST, as a minimum, calculate a fingerprint using both the 'SHA-256'
+    hash function algorithm and the hash function used to generate the
+    signature on the certificate for each possible certificate.
+    Including the hash from the signature algorithm ensures
+    interoperability with strict implementations of RFC 4572.
+    Fingerprints MAY be omitted if the endpoint knows that the peer
+    supports a stronger algorithm, if the peer has not been upgraded
+    to support the 'SHA-256' algorithm, or if local policy mandates
+    use of stronger algorithms.
 
     If fingerprints associated with multiple certificates are
     calculated, the same set of hash functions MUST be used to
@@ -200,6 +202,11 @@ NEW TEXT:
 
 	<section title="Change Log">
 		<t>[RFC EDITOR NOTE: Please remove this section when publishing]</t>
+           <t>Changes from draft-ietf-mmusic-4572-update-05
+                <list style="symbols">
+                  <t>Added a requirement to generate a fingerprint that matches the signature.</t>
+                </list>
+            </t>
            <t>Changes from draft-ietf-mmusic-4572-update-04
                 <list style="symbols">
                   <t>Removed prevously added requirement that endpoint must calcuate
