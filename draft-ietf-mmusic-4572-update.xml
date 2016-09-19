@@ -149,10 +149,10 @@ NEW TEXT:
     signature on the certificate for each possible certificate.
     Including the hash from the signature algorithm ensures
     interoperability with strict implementations of RFC 4572.
-    Fingerprints MAY be omitted if the endpoint knows that the peer
-    supports a stronger algorithm, if the peer has not been upgraded
-    to support the 'SHA-256' algorithm, or if local policy mandates
-    use of stronger algorithms.
+    A fingerprint MAY be omitted if the endpoint includes a hash with a
+    stronger hash algorithm that it knows that the peer supports, if it
+    is known that the peer does not support the hash algorithm, or if
+    local policy mandates use of stronger algorithms.
 
     If fingerprints associated with multiple certificates are
     calculated, the same set of hash functions MUST be used to
