@@ -76,6 +76,12 @@
             cipher suite with a stronger cipher suite, and removes the requirement to use the same
             hash function for calculating a certificate fingerprint and certificate signature.
         </t>
+        <t>
+            NOTE: Eventhough this document updates the procedures in RFC 4572, it does not make
+            existing implementations non-compliant with RFC 4572. In addition, the updated
+            procedures in this document have been defined in order to be backward compatible with
+            the procedures in RFC 4572.
+        </t>
     </section>
 
     <section title="Conventions">
