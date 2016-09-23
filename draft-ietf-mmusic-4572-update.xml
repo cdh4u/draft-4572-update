@@ -77,8 +77,8 @@
             hash function for calculating a certificate fingerprint and certificate signature.
         </t>
         <t>
-            NOTE: Eventhough this document updates the procedures in RFC 4572, it does not make
-            existing implementations non-compliant with RFC 4572. In addition, the updated
+            NOTE: Even though this document updates the procedures in RFC 4572, it does not make
+            existing implementations non-compliant with RFC 4572. The updated
             procedures in this document have been defined in order to be backward compatible with
             the procedures in RFC 4572.
         </t>
@@ -211,6 +211,7 @@ NEW TEXT:
            <t>Changes from draft-ietf-mmusic-4572-update-05
                 <list style="symbols">
                   <t>Added a requirement to generate a fingerprint that matches the signature.</t>
+                  <t>Added text clarifying that updates do not make existing implementations non-compliant with RFC 4572.</t>
                 </list>
             </t>
            <t>Changes from draft-ietf-mmusic-4572-update-04
