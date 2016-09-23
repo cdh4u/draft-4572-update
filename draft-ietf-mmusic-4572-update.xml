@@ -4,7 +4,7 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc sortrefs="no" ?>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-05.txt" updates="4572" submissionType="IETF" xml:lang="en">
+<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-06.txt" updates="4572" submissionType="IETF" xml:lang="en">
   <front>
     <title>
 		Updates to RFC 4572
@@ -195,9 +195,11 @@ NEW TEXT:
 	</section>
 
     <section anchor="section.iana" title="IANA Considerations">
-        <t>
-            This document makes no requests from IANA.
-        </t>
+      <t>
+         IANA is requested to add a reference to this document
+         for the att-field (both session and media level) registration "fingerprint"
+         in Session Description Protocol (SDP) Parameters registry.
+    	</t>
 	</section>
 
 	<section title="Acknowledgements">
@@ -212,6 +214,7 @@ NEW TEXT:
                 <list style="symbols">
                   <t>Added a requirement to generate a fingerprint that matches the signature.</t>
                   <t>Added text clarifying that updates do not make existing implementations non-compliant with RFC 4572.</t>
+                  <t>IANA Considerations text added.</t>
                 </list>
             </t>
            <t>Changes from draft-ietf-mmusic-4572-update-04
