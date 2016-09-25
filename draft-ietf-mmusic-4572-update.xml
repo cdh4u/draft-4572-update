@@ -4,11 +4,11 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc sortrefs="no" ?>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-06.txt" updates="4572" submissionType="IETF" xml:lang="en">
+<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-07.txt" updates="4572" submissionType="IETF" xml:lang="en">
   <front>
-    <title>
-		Updates to RFC 4572
-	</title>
+    <title abbrev="SDP Fingerprint Attribute">
+      SDP Fingerprint Attribute Usage Clarifications
+	  </title>
     <author fullname="Christer Holmberg" initials="C.H." surname="Holmberg">
         <organization abbrev="Ericsson">Ericsson</organization>
         <address>
@@ -27,7 +27,7 @@
     <date year="2016" />
     <area>RAI</area>
     <abstract>
-		<t>
+        <t>
             This document updates RFC 4572 by clarifying the usage of multiple SDP 'fingerprint'
             attributes with a single SDP media description ("m= line"). The document also updates the preferred cipher
             suite with a stronger cipher suite.
@@ -208,6 +208,11 @@ NEW TEXT:
 
 	<section title="Change Log">
 		<t>[RFC EDITOR NOTE: Please remove this section when publishing]</t>
+           <t>Changes from draft-ietf-mmusic-4572-update-05
+              <list style="symbols">
+                 <t>Change of document title.</t>
+              </list>
+           </t>
            <t>Changes from draft-ietf-mmusic-4572-update-05
                 <list style="symbols">
                   <t>Added a requirement to generate a fingerprint that matches the signature.</t>
