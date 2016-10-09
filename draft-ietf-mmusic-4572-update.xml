@@ -4,7 +4,7 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc sortrefs="no" ?>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-07.txt" updates="4572" submissionType="IETF" xml:lang="en">
+<rfc ipr="trust200902" category="std" docName="draft-ietf-mmusic-4572-update-08.txt" updates="4572" submissionType="IETF" xml:lang="en">
   <front>
     <title abbrev="SDP Fingerprint Attribute">
       SDP Fingerprint Attribute Usage Clarifications
@@ -29,8 +29,7 @@
     <abstract>
         <t>
             This document updates RFC 4572 by clarifying the usage of multiple SDP 'fingerprint'
-            attributes with a single SDP media description ("m= line"). The document also updates the preferred cipher
-            suite with a stronger cipher suite.
+            attributes with a single SDP media description ("m= line").
         </t>
     </abstract>
 </front>
@@ -52,10 +51,6 @@
             certificates for RTP and RTCP.
         </t>
         <t>
-            RFC 4572 also specifies a preferred cipher suite. However, the currently preferred
-            cipher suite is considered outdated, and the preference needs to be updated.
-        </t>
-        <t>
             RFC 4572 mandates that the hash function used to calculate the fingerprint is the same
             hash function used to calculate the certificate signature. That requirement might
             prevent usage of newer, stronger and more collision-safe hash functions for calculating
@@ -64,15 +59,13 @@
             calculated using updated hash functions alongside those that are needed to interoperate
             with existing implementations.
         </t>
-	<t>
+        <t>
             This document updates RFC 4572 <xref format="default" pageno="false" target="RFC4572"/>
             by clarifying the usage of multiple SDP 'fingerprint' attributes. It is clarified that
             multiple 'fingerprint' attributes can be used to carry fingerprints, calculated using
             different hash functions, associated with a given certificate, and to carry fingerprints
             associated with multiple certificates. The fingerprint matching procedure, when multiple
-            fingerprints are provided, are also clarified. The document also updates the preferred
-            cipher suite with a stronger cipher suite, and removes the requirement to use the same
-            hash function for calculating a certificate fingerprint and certificate signature.
+            fingerprints are provided, are also clarified.
         </t>
         <t>
             NOTE: Even though this document updates the procedures in RFC 4572, it does not make
@@ -94,43 +87,6 @@
         <t>
             This section updates section 5 of RFC 4572.
         </t>
-        <section title="Update to the sixth paragraph of section 5">
-            <figure>
-                <artwork align="left" alt="" height="" name="" type="" width="" xml:space="preserve"><![CDATA[
-
-OLD TEXT:
-
-   A certificate fingerprint MUST be computed using the same one-way
-   hash function as is used in the certificate's signature algorithm.
-   (This ensures that the security properties required for the
-   certificate also apply for the fingerprint.  It also guarantees that
-   the fingerprint will be usable by the other endpoint, so long as the
-   certificate itself is.)  Following RFC 3279 [7] as updated by RFC
-   4055 [9], therefore, the defined hash functions are 'SHA-1' [11]
-   [19], 'SHA-224' [11], 'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11]
-   , 'MD5' [12], and 'MD2' [13], with 'SHA-1' preferred.  A new IANA
-   registry of Hash Function Textual Names, specified in Section 8,
-   allows for addition of future tokens, but they may only be added if
-   they are included in RFCs that update or obsolete RFC 3279 [7].
-   Self-signed certificates (for which legacy certificates are not a
-   consideration) MUST use one of the FIPS 180 algorithms (SHA-1,
-   SHA-224, SHA-256, SHA-384, or SHA-512) as their signature algorithm,
-   and thus also MUST use it to calculate certificate fingerprints.
-
-
-NEW TEXT:
-
-   Following RFC 3279 [7] as updated by RFC 4055 [9], therefore, the
-   defined hash functions are 'SHA-1' [11] [19], 'SHA-224' [11],
-   'SHA-256' [11], 'SHA-384' [11], 'SHA-512' [11], 'MD5' [12], and
-   'MD2' [13], with 'SHA-256' preferred. A new IANA registry of Hash
-   Function Textual Names, specified in Section 8, allows for addition
-   of future tokens, but they may only be added if they are included
-   in RFCs that update or obsolete RFC 3279 [7].
-
-                ]]></artwork>
-            </figure>
-        </section>
         <section title="New paragraphs to the end of section 5">
                     <figure>
                 <artwork align="left" alt="" height="" name="" type="" width="" xml:space="preserve"><![CDATA[
@@ -148,11 +104,10 @@ NEW TEXT:
     it is not known which certificate will be used when the
     fingerprints are exchanged. In such cases, one or more fingerprints
     MUST be calculated for each possible certificate. An endpoint
-    MUST, as a minimum, calculate a fingerprint using both the 'SHA-256'
-    hash function algorithm and the hash function used to generate the
-    signature on the certificate for each possible certificate.
-    Including the hash from the signature algorithm ensures
-    interoperability with strict implementations of RFC 4572.
+    MUST, as a minimum, for each possiblr cerficiate, calculate a
+    fingerprint using the hash function used to generate the signature
+    on the certificate. Including the hash from the signature algorithm
+    ensures interoperability with strict implementations of RFC 4572.
     Either of these fingerprints MAY be omitted if the endpoint includes
     a hash with a stronger hash algorithm that it knows that the peer
     supports, if it is known that the peer does not support the hash
@@ -185,10 +140,9 @@ NEW TEXT:
 
 	<section title="Security Considerations">
 		<t>
-            This document improves security. It updates the preferred hash function cipher suite
-            from SHA-1 to SHA-256. By clarifying the usage and handling of multiple fingerprints, the
-            document also enables hash agility, and incremental deployment of newer, and more secure,
-            cipher suites.
+            This document improves security. By clarifying the usage and handling
+            of multiple fingerprints, the document enables hash agility, and
+            incremental deployment of newer, and more secure, cipher suites.
 		</t>
 	</section>
 
@@ -202,12 +156,21 @@ NEW TEXT:
 
 	<section title="Acknowledgements">
 		<t>
-            Martin Thomson, Paul Kyzivat, Jonathan Lennox and Roman Shpount provided valuable comments and input on this document.
-        </t>
+            Martin Thomson, Paul Kyzivat, Jonathan Lennox and Roman Shpount provided
+            valuable comments and input on this document.
+    </t>
 	</section>
 
 	<section title="Change Log">
 		<t>[RFC EDITOR NOTE: Please remove this section when publishing]</t>
+           <t>Changes from draft-ietf-mmusic-4572-update-07
+              <list style="symbols">
+              <t>
+                 Removal of cipher suite update, based on WG agreement
+                 to define that in a separate document.
+              </t>
+              </list>
+           </t>
            <t>Changes from draft-ietf-mmusic-4572-update-05
               <list style="symbols">
                  <t>Change of document title.</t>
